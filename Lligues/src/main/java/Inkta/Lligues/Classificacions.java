@@ -24,13 +24,14 @@ import javax.swing.JLabel;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import javax.swing.JScrollPane;
 
 public class Classificacions extends JFrame {
 
 	private JPanel contentPane;
-	public JTable table;
 	public Lliga actual = new Lliga();
 	DefaultTableModel dtm = new DefaultTableModel();
+	private JTable table;
 	/**
 	 * Launch the application.
 	 */
@@ -138,16 +139,12 @@ public class Classificacions extends JFrame {
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
-		contentPane.setLayout(new MigLayout("", "[206px][186px][34px]",
-				"[15px][145px][25px][]"));
+		contentPane.setLayout(new MigLayout("", "[206px,grow][186px][34px]", "[15px,grow][145px][25px][]"));
 
 		JLabel lblNewLabel = new JLabel("Lliga");
 		contentPane.add(lblNewLabel, "cell 2 0,alignx left,aligny top");
-
-		table = new JTable();
 		String[] noms = { "Nom", "Guanyats", "Perduts", "Empatats", "Puntuacio" };
 		Columnes(noms);
-		contentPane.add(table, "cell 0 1 3 2,grow");
 
 		JButton btnNewButton = new JButton("Entrar una nova Jornada");
 		btnNewButton.addActionListener(new ActionListener() {
@@ -169,6 +166,12 @@ public class Classificacions extends JFrame {
 				}
 			}
 		});
+
+		JScrollPane scrollPane = new JScrollPane();
+		contentPane.add(scrollPane, "cell 0 1 2 1,grow");
+
+		table = new JTable();
+		scrollPane.setViewportView(table);
 		contentPane.add(btnNewButton, "cell 0 3,alignx left,aligny top");
 	}
 

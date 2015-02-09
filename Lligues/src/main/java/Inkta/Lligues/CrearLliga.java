@@ -124,6 +124,13 @@ public class CrearLliga extends JFrame {
 									"Error", JOptionPane.ERROR_MESSAGE);
 				} else {
 					if (!comprovaNom(equips)) {
+						if (textField.getText().length() == 0) {
+							JOptionPane
+							.showMessageDialog(
+									contentPane,
+									"Error, El nom de la lliga no pot estar buit",
+									"Error", JOptionPane.ERROR_MESSAGE);
+						} else {
 
 						actual.setNom(textField.getText().replaceAll(" ", ""));
 						actual.setEquips(equips);
@@ -131,6 +138,7 @@ public class CrearLliga extends JFrame {
 						guarda.crea();
 						ActualitzaTaula();
 						exitActionPerformed(evt);
+						}
 					} else {
 						JOptionPane
 								.showMessageDialog(
