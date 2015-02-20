@@ -90,9 +90,24 @@ public class CrearLliga extends JFrame {
 		JButton btnNewButton_1 = new JButton("Afegir ^");
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				equipList.add(index, new Equip(textField_1.getText()));
-				index++;
-				list.setModel(equipList);
+
+				if (textField_1.getText().toLowerCase().replaceAll(" ", "").equals("")) {
+					JOptionPane.showMessageDialog(
+							contentPane,
+							"Error, El nom del equip no pot estar buit",
+							"Error", JOptionPane.ERROR_MESSAGE);
+				} else {
+					if (comprovaString(textField_1.getText())) {
+					equipList.add(index, new Equip(textField_1.getText().trim()));
+					index++;
+					list.setModel(equipList);
+					} else {
+						JOptionPane.showMessageDialog(
+								contentPane,
+								"Error, El nom del equip no pot contenir Caracters estranys",
+								"Error", JOptionPane.ERROR_MESSAGE);
+					}
+				}
 			}
 
 		});
@@ -131,13 +146,18 @@ public class CrearLliga extends JFrame {
 									"Error, El nom de la lliga no pot estar buit",
 									"Error", JOptionPane.ERROR_MESSAGE);
 						} else {
-
-						actual.setNom(textField.getText().replaceAll(" ", ""));
-						actual.setEquips(equips);
-						CrearXML guarda = new CrearXML(actual);
-						guarda.crea();
-						ActualitzaTaula();
-						exitActionPerformed(evt);
+							if (comprovaString(textField.getText())) {
+								actual.setNom(textField.getText().replaceAll(" ", "").toLowerCase());
+								actual.setEquips(equips);
+								ActualitzaTaula();
+								exitActionPerformed(evt);
+							} else {
+								JOptionPane
+								.showMessageDialog(
+										contentPane,
+										"Error, nom de la lliga invalid",
+										"Error", JOptionPane.ERROR_MESSAGE);
+							}
 						}
 					} else {
 						JOptionPane
@@ -158,7 +178,6 @@ public class CrearLliga extends JFrame {
 			for (int a = 0; a < equips.size(); a++) {
 				if (equips.get(i).getNom().equals(equips.get(a).getNom())
 						&& i != a) {
-					System.out.println(equips.get(i) + " " + equips.get(a));
 					trobat = true;
 				}
 			}
@@ -208,6 +227,17 @@ public class CrearLliga extends JFrame {
 	public void setLliga(Lliga actual) {
 		this.actual = actual;
 
+	}
+
+	public boolean comprovaString(String a) {
+		String errors = ",;:-'`^*<>!";
+		for (int i=0; i < a.length(); i++) {
+			if (errors.indexOf(a.charAt(i)) >= 0) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 }

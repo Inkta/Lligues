@@ -24,7 +24,13 @@ import javax.swing.JLabel;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.File;
+
 import javax.swing.JScrollPane;
+import javax.xml.XMLConstants;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 
 public class Classificacions extends JFrame {
 
@@ -32,6 +38,7 @@ public class Classificacions extends JFrame {
 	public Lliga actual = new Lliga();
 	DefaultTableModel dtm = new DefaultTableModel();
 	private JTable table;
+
 	/**
 	 * Launch the application.
 	 */
@@ -85,12 +92,20 @@ public class Classificacions extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser file = new JFileChooser();
 				file.showOpenDialog(null);
-				File xml = file.getSelectedFile();
-				ObrirXML obre = new ObrirXML();
-				obre.setLliga(actual);
-				obre.setTable(table);
-				obre.setTableModel(dtm);
-				obre.llegueix(xml);
+				if (file.getSelectedFile() != null) {
+					File xml = file.getSelectedFile();
+					if (validarXML(xml)) {
+						ObrirXML obre = new ObrirXML();
+						obre.setLliga(actual);
+						obre.setTable(table);
+						obre.setTableModel(dtm);
+						obre.llegueix(xml);
+					} else {
+						JOptionPane.showMessageDialog(contentPane,
+								"Error, l'arxiu no es valid",
+								"Error", JOptionPane.ERROR_MESSAGE);
+					}
+				}
 			}
 		});
 		mnNewMenu.add(mntmNewMenuItem_1);
@@ -98,8 +113,14 @@ public class Classificacions extends JFrame {
 		JMenuItem mntmDesarLliga = new JMenuItem("Desar Lliga");
 		mntmDesarLliga.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				CrearXML guarda = new CrearXML(actual);
-				guarda.crea();
+				if (!actual.getNom().equals("Nocreada")) {
+					CrearXML guarda = new CrearXML(actual);
+					guarda.crea();
+				} else {
+					JOptionPane.showMessageDialog(contentPane,
+							"Error, Has de crear una lliga abans de guardar",
+							"Error", JOptionPane.ERROR_MESSAGE);
+				}
 			}
 		});
 		mnNewMenu.add(mntmDesarLliga);
@@ -119,9 +140,11 @@ public class Classificacions extends JFrame {
 		mntmNewMenuItem_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if (actual.getNom().equals("Nocreada")) {
-					JOptionPane.showMessageDialog(contentPane,
-							"Error, Has de crear la lliga abans de modificar partits",
-							"Error", JOptionPane.ERROR_MESSAGE);
+					JOptionPane
+							.showMessageDialog(
+									contentPane,
+									"Error, Has de crear la lliga abans de modificar partits",
+									"Error", JOptionPane.ERROR_MESSAGE);
 				} else {
 					try {
 						PartitNou frame = new PartitNou();
@@ -139,7 +162,8 @@ public class Classificacions extends JFrame {
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
-		contentPane.setLayout(new MigLayout("", "[206px,grow][186px][34px]", "[15px,grow][145px][25px][]"));
+		contentPane.setLayout(new MigLayout("", "[206px,grow][186px][34px]",
+				"[15px,grow][145px][25px][]"));
 
 		JLabel lblNewLabel = new JLabel("Lliga");
 		contentPane.add(lblNewLabel, "cell 2 0,alignx left,aligny top");
@@ -150,9 +174,11 @@ public class Classificacions extends JFrame {
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (actual.getNom().equals("Nocreada")) {
-					JOptionPane.showMessageDialog(contentPane,
-							"Error, Has de crear la lliga abans de modificar partits",
-							"Error", JOptionPane.ERROR_MESSAGE);
+					JOptionPane
+							.showMessageDialog(
+									contentPane,
+									"Error, Has de crear la lliga abans de modificar partits",
+									"Error", JOptionPane.ERROR_MESSAGE);
 				} else {
 					try {
 						PartitNou frame = new PartitNou();
@@ -181,4 +207,16 @@ public class Classificacions extends JFrame {
 		}
 	}
 
+	public static boolean validarXML(File xml) {
+		try {
+			SchemaFactory factory = SchemaFactory
+					.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+			Schema schema = factory.newSchema(new File("validar.xsd"));
+			Validator validator = schema.newValidator();
+			validator.validate(new StreamSource(xml));
+		} catch (Exception e) {
+			return false;
+		}
+		return true;
+	}
 }

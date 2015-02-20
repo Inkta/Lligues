@@ -149,6 +149,12 @@ public class PartitNou extends JFrame {
 		contentPane.add(btnNewButton, "cell 1 5");
 
 		JButton btnNewButton_1 = new JButton("Cancelar");
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				exitActionPerformed(evt);
+			}
+		});
+
 		contentPane.add(btnNewButton_1, "cell 4 5");
 	}
 
@@ -179,3 +185,5 @@ public class PartitNou extends JFrame {
 	}
 
 }
+
+

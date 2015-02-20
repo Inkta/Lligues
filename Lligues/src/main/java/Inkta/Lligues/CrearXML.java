@@ -30,8 +30,6 @@ public class CrearXML {
 
 		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-
-		// root elements
 		Document doc = docBuilder.newDocument();
 		Element rootElement = doc.createElement("Lliga");
 		doc.appendChild(rootElement);
@@ -74,7 +72,6 @@ public class CrearXML {
 		Transformer transformer = transformerFactory.newTransformer();
 		DOMSource source = new DOMSource(doc);
 		StreamResult result = new StreamResult(new File(nova.getNom() + ".xml"));
-
 
 		transformer.transform(source, result);
 
